@@ -23,6 +23,7 @@ func Echo(e *echo.Echo, uc controllers.UserController) {
 		})
 	})
 
+	// user
 	api.POST("/register", uc.Register)
-
+	api.POST("/login", uc.Login)
 }

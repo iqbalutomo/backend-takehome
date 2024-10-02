@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"backend-takehome/dto"
+	"backend-takehome/helpers"
 	"backend-takehome/models"
 	"backend-takehome/repository"
 	"backend-takehome/utils"
@@ -58,5 +59,47 @@ func (u *UserController) Register(c echo.Context) error {
 	return c.JSON(http.StatusCreated, dto.Response{
 		Message: "Registered successfully",
 		Data:    dataResp,
+	})
+}
+
+func (u *UserController) Login(c echo.Context) error {
+	data := new(dto.LoginRequest)
+	if err := c.Bind(data); err != nil {
+		return echo.NewHTTPError(utils.ErrBadRequest.EchoFormatDetails(err.Error()))
+	}
+
+	if err := c.Validate(data); err != nil {
+		return echo.NewHTTPError(utils.ErrBadRequest.EchoFormatDetails(err.Error()))
+	}
+
+	userDataTmp, err := u.repo.FindByEmail(data.Email)
+	if err != nil {
+		if err.Error() == "user not found" {
+			return echo.NewHTTPError(utils.ErrUnauthorized.EchoFormatDetails("Invalid email/password"))
+		}
+
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
+	userData := models.User{
+		ID:           userDataTmp.ID,
+		Name:         userDataTmp.Name,
+		Email:        userDataTmp.Email,
+		PasswordHash: userDataTmp.PasswordHash,
+		CreatedAt:    userDataTmp.CreatedAt,
+		UpdateAt:     userDataTmp.UpdateAt,
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(userData.PasswordHash), []byte(data.Password)); err != nil {
+		return echo.NewHTTPError(utils.ErrUnauthorized.EchoFormatDetails("Invalid email/password"))
+	}
+
+	if err := helpers.SignNewJWT(c, userData); err != nil {
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
+	return c.JSON(http.StatusOK, dto.Response{
+		Message: "Login successfully",
+		Data:    "Authorization is stored in cookie",
 	})
 }

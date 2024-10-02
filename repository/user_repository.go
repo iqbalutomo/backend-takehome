@@ -8,6 +8,7 @@ import (
 
 type User interface {
 	Create(data *models.User) error
+	FindByEmail(email string) (*models.User, error)
 }
 
 type UserRepository struct {
@@ -42,4 +43,19 @@ func (u *UserRepository) Create(data *models.User) error {
 	data.ID = int(id)
 
 	return nil
+}
+
+func (u *UserRepository) FindByEmail(email string) (*models.User, error) {
+	var data models.User
+
+	query := `SELECT id, name, email, password_hash, created_at, updated_at FROM users WHERE email = ?`
+	if err := u.db.QueryRow(query, email).Scan(&data.ID, &data.Name, &data.Email, &data.PasswordHash, &data.CreatedAt, &data.UpdateAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errors.New("user not found")
+		}
+
+		return nil, err
+	}
+
+	return &data, nil
 }
