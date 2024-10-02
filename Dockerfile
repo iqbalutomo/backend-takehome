@@ -1,11 +1,18 @@
 FROM golang:1.21.0
 
-ENV GIN_MODE release
-
 WORKDIR /go/src/app
 
 RUN go install github.com/air-verse/air@latest
 
-COPY ./app .
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+ENV APP_ENV=development
+
+COPY .env.dev /go/src/app/.env.dev
+
+WORKDIR /go/src/app/cmd/http
 
 CMD air

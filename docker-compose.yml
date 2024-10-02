@@ -2,11 +2,14 @@ services:
   app:
     build:
       context: .
+    container_name: app
     environment:
       GOMODCACHE: /go/src/app/.modcache
       GOCACHE: /go/src/app/.cache
+    env_file:
+      - .env.dev
     volumes:
-      - "./app:/go/src/app"
+      - "./:/go/src/app"
     ports:
       - "8080:8080"
     depends_on:
@@ -14,9 +17,14 @@ services:
 
   db:
     image: mysql:8.0
+    container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: abc123
-      MYSQL_DATABASE: appdb
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    env_file:
+      - .env.dev
     volumes:
       - "./.service-db:/var/lib/mysql"
     ports:
