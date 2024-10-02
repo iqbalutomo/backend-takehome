@@ -2,10 +2,13 @@ package main
 
 import (
 	"backend-takehome/config"
-	"fmt"
-	"net/http"
+	"backend-takehome/controllers"
+	"backend-takehome/repository"
+	"backend-takehome/routers"
+	"backend-takehome/utils"
 	"os"
 
+	"github.com/go-playground/validator/v10"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -17,12 +20,12 @@ func main() {
 
 	e := echo.New()
 	e.Use(middleware.Logger(), middleware.Recover())
+	e.Validator = &utils.CustomValidator{NewValidator: validator.New()}
 
-	e.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, echo.Map{
-			"message": fmt.Sprintf("server running on port %s", os.Getenv("PORT")),
-		})
-	})
+	userRepo := repository.NewUserRepository(db)
+	userController := controllers.NewUserController(userRepo)
+
+	routers.Echo(e, *userController)
 
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }
