@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Echo(e *echo.Echo, uc controllers.UserController, pc controllers.PostController) {
+func Echo(e *echo.Echo, uc controllers.UserController, pc controllers.PostController, cc controllers.CommentController) {
 	apiVersion := "/api/v1"
 	api := e.Group(apiVersion)
 
@@ -36,5 +36,12 @@ func Echo(e *echo.Echo, uc controllers.UserController, pc controllers.PostContro
 		posts.GET("", pc.GetPosts)
 		posts.PUT("/:id", pc.UpdatePost, middlewares.ProtectedRoute)
 		posts.DELETE("/:id", pc.DeletePost, middlewares.ProtectedRoute)
+	}
+
+	// comment
+	comments := posts.Group("/:id/comments")
+	comments.Use(middlewares.ProtectedRoute)
+	{
+		comments.POST("", cc.CreateComment)
 	}
 }

@@ -28,7 +28,10 @@ func main() {
 	postRepo := repository.NewPostRepository(db)
 	postController := controllers.NewPostController(postRepo)
 
-	routers.Echo(e, *userController, *postController)
+	commentRepo := repository.NewCommentRepository(db)
+	commentController := controllers.NewCommentController(commentRepo, postRepo)
+
+	routers.Echo(e, *userController, *postController, *commentController)
 
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }
