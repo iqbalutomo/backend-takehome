@@ -5,6 +5,7 @@ import (
 	"backend-takehome/helpers"
 	"backend-takehome/models"
 	"backend-takehome/repository"
+	"backend-takehome/services"
 	"backend-takehome/utils"
 	"fmt"
 	"net/http"
@@ -15,11 +16,12 @@ import (
 )
 
 type PostController struct {
-	repo repository.Post
+	repo    repository.Post
+	caching services.CachingService
 }
 
-func NewPostController(repo repository.Post) *PostController {
-	return &PostController{repo}
+func NewPostController(repo repository.Post, caching services.CachingService) *PostController {
+	return &PostController{repo, caching}
 }
 
 func (p *PostController) CreatePost(c echo.Context) error {
@@ -53,6 +55,11 @@ func (p *PostController) CreatePost(c echo.Context) error {
 		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
 	}
 
+	_, err = p.CachePostDetailed(dataPost.ID)
+	if err != nil {
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
 	return c.JSON(http.StatusCreated, dto.Response{
 		Message: "Post has been created",
 		Data:    dataPost,
@@ -65,13 +72,26 @@ func (p *PostController) GetPostDetail(c echo.Context) error {
 		return echo.NewHTTPError(utils.ErrBadRequest.EchoFormatDetails(err.Error()))
 	}
 
-	postDetail, err := p.repo.FindByID(uint(postID))
+	// from cache
+	postDetail, err := p.caching.GetPostDetailed(uint(postID))
 	if err != nil {
-		if err.Error() == "post not found" {
-			return echo.NewHTTPError(utils.ErrNotFound.EchoFormatDetails("Post not found"))
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
+	// fallback
+	if postDetail == nil {
+		postDetail, err = p.repo.FindByID(uint(postID))
+		if err != nil {
+			if err.Error() == "post not found" {
+				return echo.NewHTTPError(utils.ErrNotFound.EchoFormatDetails("Post not found"))
+			}
+
+			return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
 		}
 
-		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+		if err := p.caching.SetPostDetailed(uint(postID), postDetail); err != nil {
+			return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+		}
 	}
 
 	return c.JSON(http.StatusOK, dto.Response{
@@ -155,6 +175,11 @@ func (p *PostController) UpdatePost(c echo.Context) error {
 		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
 	}
 
+	_, err = p.CachePostDetailed(uint(postID))
+	if err != nil {
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
 	return c.JSON(http.StatusOK, dto.Response{
 		Message: fmt.Sprintf("Update post with id %d successfully", postID),
 		Data:    dataPostUpdate,
@@ -197,4 +222,17 @@ func (p *PostController) DeletePost(c echo.Context) error {
 		Message: "Post has been deleted",
 		Data:    fmt.Sprintf("Post ID %d", postID),
 	})
+}
+
+func (p *PostController) CachePostDetailed(postID uint) (*models.PostDetail, error) {
+	data, err := p.repo.FindByID(postID)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := p.caching.SetPostDetailed(postID, data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }

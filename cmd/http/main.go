@@ -5,6 +5,7 @@ import (
 	"backend-takehome/controllers"
 	"backend-takehome/repository"
 	"backend-takehome/routers"
+	"backend-takehome/services"
 	"backend-takehome/utils"
 	"os"
 
@@ -22,11 +23,14 @@ func main() {
 	e.Use(middleware.Logger(), middleware.Recover())
 	e.Validator = &utils.CustomValidator{NewValidator: validator.New()}
 
+	redisClient := config.InitRedistClient()
+	cachingService := services.NewCachingService(redisClient)
+
 	userRepo := repository.NewUserRepository(db)
 	userController := controllers.NewUserController(userRepo)
 
 	postRepo := repository.NewPostRepository(db)
-	postController := controllers.NewPostController(postRepo)
+	postController := controllers.NewPostController(postRepo, cachingService)
 
 	commentRepo := repository.NewCommentRepository(db)
 	commentController := controllers.NewCommentController(commentRepo, postRepo)
