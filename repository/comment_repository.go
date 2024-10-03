@@ -8,7 +8,7 @@ import (
 
 type Comment interface {
 	Create(data *models.Comment) error
-	GetAllByPostID(postID uint) ([]models.Comment, error)
+	GetAllByPostID(postID uint, limit, offset int) ([]models.Comment, error)
 }
 
 type CommentRepository struct {
@@ -45,11 +45,11 @@ func (c *CommentRepository) Create(data *models.Comment) error {
 	return nil
 }
 
-func (c *CommentRepository) GetAllByPostID(postID uint) ([]models.Comment, error) {
+func (c *CommentRepository) GetAllByPostID(postID uint, limit, offset int) ([]models.Comment, error) {
 	var datas []models.Comment
 
-	query := `SELECT c.id, c.post_id, c.author_name, c.content, c.created_at FROM comments c JOIN posts p ON c.post_id = p.id WHERE p.id = ?`
-	rows, err := c.db.Query(query, postID)
+	query := `SELECT c.id, c.post_id, c.author_name, c.content, c.created_at FROM comments c JOIN posts p ON c.post_id = p.id WHERE p.id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`
+	rows, err := c.db.Query(query, postID, limit, offset)
 	if err != nil {
 		return nil, err
 	}

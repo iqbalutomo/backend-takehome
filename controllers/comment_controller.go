@@ -74,6 +74,18 @@ func (cc *CommentController) GetComments(c echo.Context) error {
 		return echo.NewHTTPError(utils.ErrBadRequest.EchoFormatDetails(err.Error()))
 	}
 
+	page, err := strconv.Atoi(c.QueryParam("page"))
+	if err != nil || page < 1 {
+		page = utils.COMMENTS_PAGE_DEFAULT
+	}
+
+	limit, err := strconv.Atoi(c.QueryParam("limit"))
+	if err != nil || limit < 1 {
+		limit = utils.COMMENTS_LIMIT_DEFAULT
+	}
+
+	offset := (page - 1) * limit
+
 	_, err = cc.postRepo.FindByID(uint(postID))
 	if err != nil {
 		if err.Error() == "post not found" {
@@ -83,7 +95,7 @@ func (cc *CommentController) GetComments(c echo.Context) error {
 		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
 	}
 
-	dataComments, err := cc.commRepo.GetAllByPostID(uint(postID))
+	dataComments, err := cc.commRepo.GetAllByPostID(uint(postID), limit, offset)
 	if err != nil {
 		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
 	}
