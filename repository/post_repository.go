@@ -10,6 +10,7 @@ type Post interface {
 	Create(data *models.Post) error
 	FindByID(postID uint) (*models.PostDetail, error)
 	GetAll() ([]models.PostDetail, error)
+	Update(data *models.Post) error
 }
 
 type PostRepository struct {
@@ -83,4 +84,23 @@ func (p *PostRepository) GetAll() ([]models.PostDetail, error) {
 	}
 
 	return datas, nil
+}
+
+func (p *PostRepository) Update(data *models.Post) error {
+	query := `UPDATE posts SET title = ?, content = ? WHERE id = ?`
+	result, err := p.db.Exec(query, data.Title, data.Content, data.ID)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("post not found")
+	}
+
+	return nil
 }
