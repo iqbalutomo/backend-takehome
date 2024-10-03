@@ -8,7 +8,7 @@ type Response struct {
 }
 
 type RegisterResponse struct {
-	ID        int       `json:"id"`
+	ID        uint      `json:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	CreatedAt time.Time `json:"created_at"`

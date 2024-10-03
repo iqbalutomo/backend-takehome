@@ -2,6 +2,7 @@ package routers
 
 import (
 	"backend-takehome/controllers"
+	"backend-takehome/middlewares"
 	"fmt"
 	"net/http"
 	"os"
@@ -9,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Echo(e *echo.Echo, uc controllers.UserController) {
+func Echo(e *echo.Echo, uc controllers.UserController, pc controllers.PostController) {
 	apiVersion := "/api/v1"
 	api := e.Group(apiVersion)
 
@@ -26,4 +27,8 @@ func Echo(e *echo.Echo, uc controllers.UserController) {
 	// user
 	api.POST("/register", uc.Register)
 	api.POST("/login", uc.Login)
+
+	// post
+	posts := api.Group("/posts")
+	posts.POST("", pc.CreatePost, middlewares.ProtectedRoute)
 }

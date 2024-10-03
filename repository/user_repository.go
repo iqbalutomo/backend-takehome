@@ -40,7 +40,7 @@ func (u *UserRepository) Create(data *models.User) error {
 		return err
 	}
 
-	data.ID = int(id)
+	data.ID = uint(id)
 
 	return nil
 }
