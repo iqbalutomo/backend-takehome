@@ -27,6 +27,7 @@ func Echo(e *echo.Echo, uc controllers.UserController, pc controllers.PostContro
 	// user
 	api.POST("/register", uc.Register)
 	api.POST("/login", uc.Login)
+	api.POST("/logout", uc.Logout, middlewares.ProtectedRoute)
 
 	// post
 	posts := api.Group("/posts")

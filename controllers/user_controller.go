@@ -103,3 +103,18 @@ func (u *UserController) Login(c echo.Context) error {
 		Data:    "Authorization is stored in cookie",
 	})
 }
+
+func (u *UserController) Logout(c echo.Context) error {
+	c.SetCookie(&http.Cookie{
+		Name:     "Authorization",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Expires:  time.Unix(0, 0),
+	})
+
+	return c.JSON(http.StatusOK, dto.Response{
+		Message: "Logout successfully",
+		Data:    "Authorization in cookie has been deleted",
+	})
+}
