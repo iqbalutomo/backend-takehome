@@ -79,3 +79,15 @@ func (p *PostController) GetPostDetail(c echo.Context) error {
 		Data:    postDetail,
 	})
 }
+
+func (p *PostController) GetPosts(c echo.Context) error {
+	posts, err := p.repo.GetAll()
+	if err != nil {
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
+	return c.JSON(http.StatusOK, dto.Response{
+		Message: "Get all posts successfully",
+		Data:    posts,
+	})
+}

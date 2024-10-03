@@ -9,6 +9,7 @@ import (
 type Post interface {
 	Create(data *models.Post) error
 	FindByID(postID uint) (*models.PostDetail, error)
+	GetAll() ([]models.PostDetail, error)
 }
 
 type PostRepository struct {
@@ -48,7 +49,7 @@ func (p *PostRepository) Create(data *models.Post) error {
 func (p *PostRepository) FindByID(postID uint) (*models.PostDetail, error) {
 	var postDetail models.PostDetail
 
-	query := `SELECT posts.id, posts.title, posts.content, posts.author_id, posts.created_at, posts.updated_at, users.id, users.name, users.email FROM posts JOIN users ON posts.author_id = users.id WHERE posts.id = ?`
+	query := `SELECT p.id, p.title, p.content, p.author_id, p.created_at, p.updated_at, u.id, u.name, u.email FROM posts p JOIN users u ON p.author_id = u.id WHERE p.id = ?`
 	if err := p.db.QueryRow(query, postID).Scan(&postID, &postDetail.Post.Title, &postDetail.Post.Content, &postDetail.Post.AuthorID, &postDetail.Post.CreatedAt, &postDetail.Post.UpdatedAt, &postDetail.Author.ID, &postDetail.Author.Name, &postDetail.Author.Email); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errors.New("post not found")
@@ -60,4 +61,26 @@ func (p *PostRepository) FindByID(postID uint) (*models.PostDetail, error) {
 	postDetail.Post.ID = postID
 
 	return &postDetail, nil
+}
+
+func (p *PostRepository) GetAll() ([]models.PostDetail, error) {
+	var datas []models.PostDetail
+
+	query := `SELECT p.id, p.title, p.content, p.author_id, p.created_at, p.updated_at, u.id, u.name, u.email FROM posts p JOIN users u ON p.author_id = u.id`
+	rows, err := p.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var data models.PostDetail
+		if err := rows.Scan(&data.Post.ID, &data.Post.Title, &data.Post.Content, &data.Post.AuthorID, &data.Post.CreatedAt, &data.Post.UpdatedAt, &data.Author.ID, &data.Author.Name, &data.Author.Email); err != nil {
+			return nil, err
+		}
+
+		datas = append(datas, data)
+	}
+
+	return datas, nil
 }

@@ -32,4 +32,5 @@ func Echo(e *echo.Echo, uc controllers.UserController, pc controllers.PostContro
 	posts := api.Group("/posts")
 	posts.POST("", pc.CreatePost, middlewares.ProtectedRoute)
 	posts.GET("/:id", pc.GetPostDetail)
+	posts.GET("", pc.GetPosts)
 }
