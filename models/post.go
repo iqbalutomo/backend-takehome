@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Post struct {
 	ID        uint      `json:"id"`
@@ -9,4 +11,9 @@ type Post struct {
 	AuthorID  uint      `json:"author_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type PostDetail struct {
+	Post   Post   `json:"post"`
+	Author Author `json:"author"`
 }

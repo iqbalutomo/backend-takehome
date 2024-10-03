@@ -10,3 +10,9 @@ type User struct {
 	CreatedAt    time.Time `json:"created_at"`
 	UpdateAt     time.Time `json:"updated_at"`
 }
+
+type Author struct {
+	ID    uint   `json:"id"`
+	Name  string `json:"name" `
+	Email string `json:"email" `
+}

@@ -6,7 +6,9 @@ import (
 	"backend-takehome/models"
 	"backend-takehome/repository"
 	"backend-takehome/utils"
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -54,5 +56,26 @@ func (p *PostController) CreatePost(c echo.Context) error {
 	return c.JSON(http.StatusCreated, dto.Response{
 		Message: "Post has been created",
 		Data:    dataPost,
+	})
+}
+
+func (p *PostController) GetPostDetail(c echo.Context) error {
+	postID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(utils.ErrBadRequest.EchoFormatDetails(err.Error()))
+	}
+
+	postDetail, err := p.repo.FindByID(uint(postID))
+	if err != nil {
+		if err.Error() == "post not found" {
+			return echo.NewHTTPError(utils.ErrNotFound.EchoFormatDetails("Post not found"))
+		}
+
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
+	return c.JSON(http.StatusOK, dto.Response{
+		Message: fmt.Sprintf("Get post detail with id %d successfully", postID),
+		Data:    postDetail,
 	})
 }
