@@ -35,5 +35,6 @@ func Echo(e *echo.Echo, uc controllers.UserController, pc controllers.PostContro
 		posts.GET("/:id", pc.GetPostDetail)
 		posts.GET("", pc.GetPosts)
 		posts.PUT("/:id", pc.UpdatePost, middlewares.ProtectedRoute)
+		posts.DELETE("/:id", pc.DeletePost, middlewares.ProtectedRoute)
 	}
 }

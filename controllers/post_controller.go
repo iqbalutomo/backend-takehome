@@ -146,3 +146,41 @@ func (p *PostController) UpdatePost(c echo.Context) error {
 		Data:    dataPostUpdate,
 	})
 }
+
+func (p *PostController) DeletePost(c echo.Context) error {
+	user, err := helpers.GetClaims(c)
+	if err != nil {
+		return err
+	}
+
+	postID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(utils.ErrBadRequest.EchoFormatDetails(err.Error()))
+	}
+
+	dataTmp, err := p.repo.FindByID(uint(postID))
+	if err != nil {
+		if err.Error() == "post not found" {
+			return echo.NewHTTPError(utils.ErrNotFound.EchoFormatDetails("Post not found"))
+		}
+
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
+	if user.ID != dataTmp.Author.ID {
+		return echo.NewHTTPError(utils.ErrUnauthorized.EchoFormatDetails("Access not permitted"))
+	}
+
+	if err := p.repo.Delete(uint(postID)); err != nil {
+		if err.Error() == "post not found" {
+			return echo.NewHTTPError(utils.ErrNotFound.EchoFormatDetails("Post not found"))
+		}
+
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
+	return c.JSON(http.StatusOK, dto.Response{
+		Message: "Post has been deleted",
+		Data:    fmt.Sprintf("Post ID %d", postID),
+	})
+}
