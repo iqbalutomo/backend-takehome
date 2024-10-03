@@ -4,12 +4,13 @@ import (
 	"backend-takehome/models"
 	"database/sql"
 	"errors"
+	"fmt"
 )
 
 type Post interface {
 	Create(data *models.Post) error
 	FindByID(postID uint) (*models.PostDetail, error)
-	GetAll() ([]models.PostDetail, error)
+	GetAll(limit, offset int, sort string) ([]models.PostDetail, error)
 	Update(data *models.Post) error
 	Delete(postID uint) error
 }
@@ -65,11 +66,16 @@ func (p *PostRepository) FindByID(postID uint) (*models.PostDetail, error) {
 	return &postDetail, nil
 }
 
-func (p *PostRepository) GetAll() ([]models.PostDetail, error) {
+func (p *PostRepository) GetAll(limit, offset int, sort string) ([]models.PostDetail, error) {
 	var datas []models.PostDetail
 
-	query := `SELECT p.id, p.title, p.content, p.author_id, p.created_at, p.updated_at, u.id, u.name, u.email FROM posts p JOIN users u ON p.author_id = u.id`
-	rows, err := p.db.Query(query)
+	order := "DESC"
+	if sort == "oldest" {
+		order = "ASC"
+	}
+
+	query := fmt.Sprintf("SELECT p.id, p.title, p.content, p.author_id, p.created_at, p.updated_at, u.id, u.name, u.email FROM posts p JOIN users u ON p.author_id = u.id ORDER BY created_at %s LIMIT ? OFFSET ?", order)
+	rows, err := p.db.Query(query, limit, offset)
 	if err != nil {
 		return nil, err
 	}

@@ -81,7 +81,21 @@ func (p *PostController) GetPostDetail(c echo.Context) error {
 }
 
 func (p *PostController) GetPosts(c echo.Context) error {
-	posts, err := p.repo.GetAll()
+	page, err := strconv.Atoi(c.QueryParam("page"))
+	if err != nil || page < 1 {
+		page = utils.POSTS_PAGE_DEFAULT
+	}
+
+	limit, err := strconv.Atoi(c.QueryParam("limit"))
+	if err != nil || limit < 1 {
+		limit = utils.POSTS_LIMIT_DEFAULT
+	}
+
+	sort := c.QueryParam("sort") // newest || oldest (default: newest)
+
+	offset := (page - 1) * limit
+
+	posts, err := p.repo.GetAll(limit, offset, sort)
 	if err != nil {
 		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
 	}
