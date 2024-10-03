@@ -67,3 +67,29 @@ func (cc *CommentController) CreateComment(c echo.Context) error {
 		Data:    dataComment,
 	})
 }
+
+func (cc *CommentController) GetComments(c echo.Context) error {
+	postID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(utils.ErrBadRequest.EchoFormatDetails(err.Error()))
+	}
+
+	_, err = cc.postRepo.FindByID(uint(postID))
+	if err != nil {
+		if err.Error() == "post not found" {
+			return echo.NewHTTPError(utils.ErrNotFound.EchoFormatDetails("Post not found"))
+		}
+
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
+	dataComments, err := cc.commRepo.GetAllByPostID(uint(postID))
+	if err != nil {
+		return echo.NewHTTPError(utils.ErrInternalServer.EchoFormatDetails(err.Error()))
+	}
+
+	return c.JSON(http.StatusOK, dto.Response{
+		Message: "get list all comments successfully",
+		Data:    dataComments,
+	})
+}

@@ -43,5 +43,6 @@ func Echo(e *echo.Echo, uc controllers.UserController, pc controllers.PostContro
 	comments.Use(middlewares.ProtectedRoute)
 	{
 		comments.POST("", cc.CreateComment)
+		comments.GET("", cc.GetComments)
 	}
 }

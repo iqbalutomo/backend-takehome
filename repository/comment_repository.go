@@ -8,6 +8,7 @@ import (
 
 type Comment interface {
 	Create(data *models.Comment) error
+	GetAllByPostID(postID uint) ([]models.Comment, error)
 }
 
 type CommentRepository struct {
@@ -42,4 +43,26 @@ func (c *CommentRepository) Create(data *models.Comment) error {
 	data.ID = uint(id)
 
 	return nil
+}
+
+func (c *CommentRepository) GetAllByPostID(postID uint) ([]models.Comment, error) {
+	var datas []models.Comment
+
+	query := `SELECT c.id, c.post_id, c.author_name, c.content, c.created_at FROM comments c JOIN posts p ON c.post_id = p.id WHERE p.id = ?`
+	rows, err := c.db.Query(query, postID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var data models.Comment
+		if err := rows.Scan(&data.ID, &data.PostID, &data.AuthorName, &data.Content, &data.CreatedAt); err != nil {
+			return nil, err
+		}
+
+		datas = append(datas, data)
+	}
+
+	return datas, nil
 }
