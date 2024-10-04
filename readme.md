@@ -1,91 +1,60 @@
-# Take-Home Test for Backend Engineer
+# Blog Takehome | RESTful API
+Blog Takehome is my task assignment, and thank you so much for opportunity and ya! I am so excited about developing this assignment✨
 
-**Notice:** You are not required to complete 100% of the task. Please do your best within the given time frame, and focus on demonstrating your skills and approach to problem-solving. We are interested in seeing your thought process and how you tackle the core aspects of the task.
+Here are more details regarding the Blog Takehome that I created through the scaffold provided.
 
-## Task: Building a Simple Blog Platform
+## Highlights
+- REST API
+- User Authentication
+- Redis Implementation for caching
+- User Logout
+- API Docs with Swagger
+- Deployment:
+    - App to GCP (Cloud Run)
+    - MySQL to Railway
+    - Redis to Cloud Redis
 
-Create a RESTful API using Golang that allows users to perform CRUD operations on blog posts and comments, with user registration and login functionality. The data should be stored in a MySQL database.
+## Tech Stacks
+![Tech Stacks](assets/tech-stack-blog-takehome.png)
+- Go: Programming language for developing app
+- Echo: Go Framework for handle routes
+- MySQL: SQL database to store data users, posts and comments
+- JWT: Create token for authentication
+- Redis: For caching data post detail
+- Railway: Host for MySQL database
+- Cloud Run: Host for App
+- Docker: Containerization for running on local with Docker Compose and process deployment with Dockerfile
+- Swagger: REST API Docs
 
-### Entities
+## Database Designs
+![ERD](assets/erd.png)
 
-**User**
-- id (integer, primary key)
-- name (string)
-- email (string, unique)
-- password_hash (string)
-- created_at (timestamp)
-- updated_at (timestamp)
+- users can have multiple posts
+- post can have multiple comments
 
-**Blog Post**
-- id (integer, primary key)
-- title (string)
-- content (text)
-- author_id (integer, foreign key referencing User)
-- created_at (timestamp)
-- updated_at (timestamp)
-
-**Comment**
-- id (integer, primary key)
-- post_id (integer, foreign key referencing Blog Post)
-- author_name (string)
-- content (text)
-- created_at (timestamp)
-
-### API Endpoints
+## API Endpoints
+For try this API, you can try through this link:
+https://blog-takehome-243802168923.asia-southeast2.run.app
 
 **User Registration & Authentication**
 - `POST /register` - Register a new user.
-- `POST /login` - Login and receive a token for authentication.
+- `POST /login` - Login user and embed a JWT-Auth in cookie.
+- `POST /logout` - Logout the current authenticated user and clears the authorization cookie. (with Auth)
 
 **Blog Posts**
-- `POST /posts` - Create a new blog post.
+- `POST /posts` - Create a new blog post. (with Auth)
 - `GET /posts/{id}` - Get blog post details by ID.
 - `GET /posts` - List all blog posts.
-- `PUT /posts/{id}` - Update a blog post.
-- `DELETE /posts/{id}` - Delete a blog post.
+- `PUT /posts/{id}` - Update a blog post. (with Auth)
+- `DELETE /posts/{id}` - Delete a blog post. (with Auth)
 
-**Comments**
+**Comments** (with Auth)
 - `POST /posts/{id}/comments` - Add a comment to a blog post.
 - `GET /posts/{id}/comments` - List all comments for a blog post.
 
-### Database Designs
+## Resources
+- [URL](https://blog-takehome-243802168923.asia-southeast2.run.app)
+- [API Docs](https://blog-takehome-243802168923.asia-southeast2.run.app/swagger/index.html)
+- [Postman](./postman/backend-takehome.postman_collection.json)
 
-Provide a MySQL schema design that reflects the above entities and their relationships.
-Ensure proper indexing for performance optimization.
-
-## Evaluation Criteria
-
-- Code quality and organization.
-- Completeness of the required features.
-- Security measures (e.g., authentication implementation).
-- Creativity and problem-solving approach, especially if modifications to the entities were made.
-
-## Setup Instructions
-
-### Option 1: Using Docker
-
-If you have Docker installed, you can start the app with the following commands:
-
-```
-docker-compose build
-docker-compose up
-```
-
-The server will be up and running at http://localhost:8080.
-
-### Option 2: Manual Setup
-
-If you prefer to set up the web server manually, ensure you have the following prerequisites:
-
-- Go version 1.21.0
-- MySQL version 8.0
-
-Once the prerequisites are ready:
-
-1. Install [Air](https://github.com/air-verse/air), a live reload tool for Go.
-2. Navigate to the `./app` directory.
-3. Start the server by running `air`.
-
-## Submission Instructions
-
-Push your code to a Git repository and send us the link.
+Once again I thank you so much and hopefully it will be useful for me personally and others✨
