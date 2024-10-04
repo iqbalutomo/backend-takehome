@@ -1,0 +1,331 @@
+{
+	"info": {
+		"_postman_id": "95e27d74-051c-4dd8-8559-75f8e1d0cf24",
+		"name": "backend-takehome",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15867007"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Iqbal Utomo\",\n    \"email\": \"iqbalutomo@gmail.com\",\n    \"password_hash\": \"testingbaleee\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://blog-takehome-243802168923.asia-southeast2.run.app/api/v1/register",
+							"protocol": "https",
+							"host": [
+								"blog-takehome-243802168923",
+								"asia-southeast2",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"iqbalutomo@gmail.com\",\n    \"password\": \"testingbaleee\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://blog-takehome-243802168923.asia-southeast2.run.app/api/v1/login",
+							"protocol": "https",
+							"host": [
+								"blog-takehome-243802168923",
+								"asia-southeast2",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://blog-takehome-243802168923.asia-southeast2.run.app/api/v1/logout",
+							"protocol": "https",
+							"host": [
+								"blog-takehome-243802168923",
+								"asia-southeast2",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "Create Post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"How to Build Smart Contract Typescript with near-sdk-js\",\n    \"content\": \"lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum thanks..\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://blog-takehome-243802168923.asia-southeast2.run.app/api/v1/posts",
+							"protocol": "https",
+							"host": [
+								"blog-takehome-243802168923",
+								"asia-southeast2",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Post Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blog-takehome-243802168923.asia-southeast2.run.app/api/v1/posts/1",
+							"protocol": "https",
+							"host": [
+								"blog-takehome-243802168923",
+								"asia-southeast2",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Posts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blog-takehome-243802168923.asia-southeast2.run.app/api/v1/posts?page=1&limit=10&sort=oldest",
+							"protocol": "https",
+							"host": [
+								"blog-takehome-243802168923",
+								"asia-southeast2",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "oldest"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Post",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"How to Build Smart Contract Typescript with near-sdk-js\",\n    \"content\": \"lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum thanks..\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://blog-takehome-243802168923.asia-southeast2.run.app/api/v1/posts/1",
+							"protocol": "https",
+							"host": [
+								"blog-takehome-243802168923",
+								"asia-southeast2",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Post",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://blog-takehome-243802168923.asia-southeast2.run.app/api/v1/posts/1",
+							"protocol": "https",
+							"host": [
+								"blog-takehome-243802168923",
+								"asia-southeast2",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "Create Comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Impressive!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://blog-takehome-243802168923.asia-southeast2.run.app/api/v1/posts/1/comments",
+							"protocol": "https",
+							"host": [
+								"blog-takehome-243802168923",
+								"asia-southeast2",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								"1",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Comments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blog-takehome-243802168923.asia-southeast2.run.app/api/v1/posts/1/comments?page=1&limit=3",
+							"protocol": "https",
+							"host": [
+								"blog-takehome-243802168923",
+								"asia-southeast2",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								"1",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

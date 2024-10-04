@@ -3,5 +3,5 @@
 .cache
 .modcache
 tmp
-.env.dev
+.env.*
 .redis-data

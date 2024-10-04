@@ -13,7 +13,7 @@
         },
         "version": "1.0.0"
     },
-    "host": "localhost:8080",
+    "host": "blog-takehome-243802168923.asia-southeast2.run.app",
     "basePath": "/",
     "paths": {
         "/api/v1/login": {

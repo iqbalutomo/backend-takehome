@@ -65,7 +65,7 @@ definitions:
       type:
         type: string
     type: object
-host: localhost:8080
+host: blog-takehome-243802168923.asia-southeast2.run.app
 info:
   contact:
     email: muhlisiqbalutomo@gmail.com

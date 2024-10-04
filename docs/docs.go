@@ -657,7 +657,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
-	Host:             "localhost:8080",
+	Host:             "blog-takehome-243802168923.asia-southeast2.run.app",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Blog Takehome",

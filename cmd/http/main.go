@@ -25,7 +25,7 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host localhost:8080
+// @host blog-takehome-243802168923.asia-southeast2.run.app
 // @BasePath /
 func main() {
 	db := config.ConnectDB()
