@@ -24,6 +24,17 @@ func NewPostController(repo repository.Post, caching services.CachingService) *P
 	return &PostController{repo, caching}
 }
 
+// @Summary Create Post
+// @Description Create post on Blog Takehome
+// @Tags Post
+// @Accept json
+// @Produce json
+// @Param request body dto.CreatePostRequest true "Create post details"
+// @Success 200 {object} dto.Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 401 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /api/v1/posts [post]
 func (p *PostController) CreatePost(c echo.Context) error {
 	user, err := helpers.GetClaims(c)
 	if err != nil {
@@ -34,7 +45,7 @@ func (p *PostController) CreatePost(c echo.Context) error {
 		return echo.NewHTTPError(utils.ErrUnauthorized.EchoFormatDetails("Access not permitted"))
 	}
 
-	data := new(models.Post)
+	data := new(dto.CreatePostRequest)
 	if err := c.Bind(data); err != nil {
 		return echo.NewHTTPError(utils.ErrBadRequest.EchoFormatDetails(err.Error()))
 	}
@@ -66,6 +77,17 @@ func (p *PostController) CreatePost(c echo.Context) error {
 	})
 }
 
+// @Summary Get Post Detail
+// @Description Get post detail with Post ID (this data get from cache by Redis)
+// @Tags Post
+// @Accept json
+// @Produce json
+// @Param id path int true "id"
+// @Success 200 {object} dto.Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /api/v1/posts/{id} [get]
 func (p *PostController) GetPostDetail(c echo.Context) error {
 	postID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -100,6 +122,19 @@ func (p *PostController) GetPostDetail(c echo.Context) error {
 	})
 }
 
+// @Summary Get All Posts
+// @Description Get all posts with pagination and sorting options
+// @Tags Post
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of posts per page" default(10)
+// @Param sort query string false "Sort by 'newest' ord 'oldest'" default(newest)
+// @Success 200 {object} dto.Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /api/v1/posts [get]
 func (p *PostController) GetPosts(c echo.Context) error {
 	page, err := strconv.Atoi(c.QueryParam("page"))
 	if err != nil || page < 1 {
@@ -126,6 +161,19 @@ func (p *PostController) GetPosts(c echo.Context) error {
 	})
 }
 
+// @Summary Update Post
+// @Description Update post with param post id
+// @Tags Post
+// @Accept json
+// @Produce json
+// @Param id path int true "id"
+// @Param request body dto.UpdatePostRequest true "Update post details"
+// @Success 200 {object} dto.Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 401 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /api/v1/posts/{id} [put]
 func (p *PostController) UpdatePost(c echo.Context) error {
 	user, err := helpers.GetClaims(c)
 	if err != nil {
@@ -150,7 +198,7 @@ func (p *PostController) UpdatePost(c echo.Context) error {
 		return echo.NewHTTPError(utils.ErrUnauthorized.EchoFormatDetails("Access not permitted"))
 	}
 
-	dataReq := new(models.Post)
+	dataReq := new(dto.UpdatePostRequest)
 
 	if err := c.Bind(dataReq); err != nil {
 		return echo.NewHTTPError(utils.ErrBadRequest.EchoFormatDetails(err.Error()))
@@ -186,6 +234,18 @@ func (p *PostController) UpdatePost(c echo.Context) error {
 	})
 }
 
+// @Summary Delete Post
+// @Description Delete post with param post id
+// @Tags Post
+// @Accept json
+// @Produce json
+// @Param id path int true "id"
+// @Success 200 {object} dto.Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 401 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /api/v1/posts/{id} [delete]
 func (p *PostController) DeletePost(c echo.Context) error {
 	user, err := helpers.GetClaims(c)
 	if err != nil {

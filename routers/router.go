@@ -2,12 +2,12 @@ package routers
 
 import (
 	"backend-takehome/controllers"
+	_ "backend-takehome/docs"
 	"backend-takehome/middlewares"
-	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/labstack/echo/v4"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func Echo(e *echo.Echo, uc controllers.UserController, pc controllers.PostController, cc controllers.CommentController) {
@@ -15,14 +15,10 @@ func Echo(e *echo.Echo, uc controllers.UserController, pc controllers.PostContro
 	api := e.Group(apiVersion)
 
 	e.GET("", func(c echo.Context) error {
-		return c.Redirect(http.StatusTemporaryRedirect, apiVersion)
+		return c.Redirect(http.StatusTemporaryRedirect, "/swagger/index.html")
 	})
 
-	api.GET("", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, echo.Map{
-			"message": fmt.Sprintf("server running on port %s", os.Getenv("PORT")),
-		})
-	})
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	// user
 	api.POST("/register", uc.Register)

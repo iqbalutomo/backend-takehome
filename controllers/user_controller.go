@@ -21,8 +21,18 @@ func NewUserController(repo repository.User) *UserController {
 	return &UserController{repo}
 }
 
+// @Summary Register a new user
+// @Description Register a new user for post and comment
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param request body dto.RegisterRequest true "User registration details"
+// @Success 201 {object} dto.Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /api/v1/register [post]
 func (u *UserController) Register(c echo.Context) error {
-	data := new(models.User)
+	data := new(dto.RegisterRequest)
 	if err := c.Bind(data); err != nil {
 		return echo.NewHTTPError(utils.ErrBadRequest.EchoFormatDetails(err.Error()))
 	}
@@ -62,6 +72,16 @@ func (u *UserController) Register(c echo.Context) error {
 	})
 }
 
+// @Summary Login User
+// @Description Login user and embed a JWT-Auth in cookie
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param request body dto.LoginRequest true "User login details"
+// @Success 200 {object} dto.Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /api/v1/login [post]
 func (u *UserController) Login(c echo.Context) error {
 	data := new(dto.LoginRequest)
 	if err := c.Bind(data); err != nil {
@@ -104,6 +124,13 @@ func (u *UserController) Login(c echo.Context) error {
 	})
 }
 
+// @Summary Logout User
+// @Description Logout the current authenticated user and clears the authorization cookie
+// @Tags User
+// @Accept json
+// @Produce json
+// @Success 200 {object} dto.Response
+// @Router /api/v1/logout [post]
 func (u *UserController) Logout(c echo.Context) error {
 	c.SetCookie(&http.Cookie{
 		Name:     "Authorization",

@@ -15,6 +15,18 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+// @title Blog Takehome
+// @version 1.0.0
+// @description Personal Blog powered by Bythen AI :) LFG🚀
+
+// @contact.name Muhlis Iqbal Utomo
+// @contact.email muhlisiqbalutomo@gmail.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
+// @BasePath /
 func main() {
 	db := config.ConnectDB()
 	defer db.Close()

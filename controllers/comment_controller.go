@@ -22,6 +22,19 @@ func NewCommentController(commRepo repository.Comment, postRepo repository.Post)
 	return &CommentController{commRepo, postRepo}
 }
 
+// @Summary Create Comment
+// @Description Create comment on post by post id
+// @Tags Comment
+// @Accept json
+// @Produce json
+// @Param id path int true "id"
+// @Param request body dto.PostCommentRequest true "Create comment details"
+// @Success 200 {object} dto.Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 401 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /api/v1/posts/{id}/comments [post]
 func (cc *CommentController) CreateComment(c echo.Context) error {
 	user, err := helpers.GetClaims(c)
 	if err != nil {
@@ -68,6 +81,20 @@ func (cc *CommentController) CreateComment(c echo.Context) error {
 	})
 }
 
+// @Summary Get All Comments
+// @Description Get all comments on post by post id
+// @Tags Comment
+// @Accept json
+// @Produce json
+// @Param id path int true "id"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of posts per page" default(10)
+// @Success 200 {object} dto.Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 401 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /api/v1/posts/{id}/comments [get]
 func (cc *CommentController) GetComments(c echo.Context) error {
 	postID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
